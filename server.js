@@ -12,7 +12,6 @@ const profileRoute = require("./routes/profile");
 const connectToDb = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION, {
-      useUnifiedTopology: true,
       useNewUrlParser: true,
       useCreateIndex: true,
       useFindAndModify: false
@@ -35,7 +34,7 @@ app.use(cors());
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/profile", profileRoute);
 
-if (process.env.NODE_EN === "production") {
+if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 
   app.get("*", (req, res) => {
