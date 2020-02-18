@@ -12,6 +12,7 @@ const profileRoute = require("./routes/profile");
 const connectToDb = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION, {
+      useUnifiedTopology: true,
       useNewUrlParser: true,
       useCreateIndex: true,
       useFindAndModify: false
@@ -20,7 +21,6 @@ const connectToDb = async () => {
     console.log("Connected to database.");
   } catch (error) {
     console.log(error);
-    console.log(123);
   }
 };
 
