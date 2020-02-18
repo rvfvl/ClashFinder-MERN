@@ -15,7 +15,7 @@ import {
 
 export const getCurrentUserProfile = () => async dispatch => {
   try {
-    const response = await axios.get('http://localhost:5000/api/v1/profile/me');
+    const response = await axios.get('/api/v1/profile/me');
 
     dispatch({ type: CURRENT_USER_PROFILE, payload: response.data });
   } catch (error) {
@@ -28,7 +28,7 @@ export const setProfileVisibilityAction = profileStatus => async dispatch => {
   const status = JSON.stringify({ profileVisibility: profileStatus });
 
   try {
-    const response = await axios.put('http://localhost:5000/api/v1/profile/visibility', status, {
+    const response = await axios.put('/api/v1/profile/visibility', status, {
       headers: { 'Content-Type': 'application/json' }
     });
 
@@ -41,7 +41,7 @@ export const setProfileVisibilityAction = profileStatus => async dispatch => {
 
 export const unverifySummonerProfile = () => async dispatch => {
   try {
-    const response = await axios.get('http://localhost:5000/api/v1/profile/unverify');
+    const response = await axios.get('/api/v1/profile/unverify');
 
     dispatch({ type: UNVERIFY_SUMMONER_PROFILE, payload: response.data });
   } catch (error) {
@@ -54,7 +54,7 @@ export const verifySummonerProfile = summonerData => async dispatch => {
   const summonerInfo = JSON.stringify(summonerData);
 
   try {
-    const response = await axios.post('http://localhost:5000/api/v1/profile/verify', summonerInfo, {
+    const response = await axios.post('/api/v1/profile/verify', summonerInfo, {
       headers: { 'Content-Type': 'application/json' }
     });
     dispatch({ type: VERIFY_SUMMONER_PROFILE, payload: response.data });
@@ -67,7 +67,7 @@ export const verifySummonerProfile = summonerData => async dispatch => {
 
 export const getAllProfiles = () => async dispatch => {
   try {
-    const response = await axios.get('http://localhost:5000/api/v1/profile');
+    const response = await axios.get('/api/v1/profile');
     dispatch({ type: GET_PROFILE_LIST, payload: response.data });
   } catch (error) {
     dispatch(setAlert('danger', error.response.data.errors.msg));

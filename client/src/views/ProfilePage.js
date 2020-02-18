@@ -118,7 +118,7 @@ const ProfilePage = () => {
     });
 
     try {
-      await axios.put('http://localhost:5000/api/v1/profile', preparedData, config);
+      await axios.put('/api/v1/profile', preparedData, config);
       setIsEditableProfile(!isEditableProfile);
       dispatch(getCurrentUserProfile());
       dispatch(setAlert('success', 'Profile successfuly updated.'));
