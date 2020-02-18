@@ -3,6 +3,7 @@ const app = express();
 require("dotenv").config();
 const db = require("./config/db");
 const cors = require("cors");
+const path = require("path");
 
 //Import routes
 const authRoute = require("./routes/auth");
@@ -15,5 +16,13 @@ app.use(cors());
 //Load routes
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/profile", profileRoute);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 app.listen(process.env.PORT, () => console.log(`Server is running at port: ${process.env.PORT}`));
