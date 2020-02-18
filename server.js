@@ -9,11 +9,23 @@ const path = require("path");
 const authRoute = require("./routes/auth");
 const profileRoute = require("./routes/profile");
 
-mongoose.connect(
-  process.env.DB_CONNECTION,
-  { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false },
-  () => console.log("Connected to database.")
-);
+const connectToDb = async () => {
+  try {
+    await mongoose.connect(process.env.DB_CONNECTION, {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false
+    });
+
+    console.log("Connected to database.");
+  } catch (error) {
+    console.log(err.message);
+    process.exit(1);
+  }
+};
+
+connectToDb();
 
 //Load middleware
 app.use(express.json());
