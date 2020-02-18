@@ -20,8 +20,8 @@ const connectToDb = async () => {
 
     console.log("Connected to database.");
   } catch (error) {
-    console.log(error.message);
-    process.exit(1);
+    console.log(error);
+    console.log(123);
   }
 };
 
@@ -35,10 +35,12 @@ app.use(cors());
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/profile", profileRoute);
 
-app.use(express.static("client/build"));
+if (process.env.NODE_EN === "production") {
+  app.use(express.static("client/build"));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-});
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 app.listen(process.env.PORT, () => console.log(`Server is running at port: ${process.env.PORT}`));
