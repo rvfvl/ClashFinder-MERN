@@ -1,0 +1,95 @@
+[
+  { "rankValue": "1", "rankName": "Iron IV" },
+  {
+    "rankValue": "2",
+    "rankName": "Iron III"
+  },
+  {
+    "rankValue": "3",
+    "rankName": "Iron II"
+  },
+  {
+    "rankValue": "4",
+    "rankName": "Iron I"
+  },
+  {
+    "rankValue": "5",
+    "rankName": "Bronze IV"
+  },
+  {
+    "rankValue": "6",
+    "rankName": "Bronze III"
+  },
+  {
+    "rankValue": "7",
+    "rankName": "Bronze II"
+  },
+  {
+    "rankValue": "8",
+    "rankName": "Bronze I"
+  },
+  {
+    "rankValue": "9",
+    "rankName": "Silver IV"
+  },
+  {
+    "rankValue": "10",
+    "rankName": "Silver III"
+  },
+  {
+    "rankValue": "11",
+    "rankName": "Silver II"
+  },
+  {
+    "rankValue": "12",
+    "rankName": "Silver I"
+  },
+  {
+    "rankValue": "13",
+    "rankName": "Gold IV"
+  },
+  {
+    "rankValue": "14",
+    "rankName": "Gold III"
+  },
+  {
+    "rankValue": "15",
+    "rankName": "Gold II"
+  },
+  {
+    "rankValue": "16",
+    "rankName": "Gold I"
+  },
+  {
+    "rankValue": "17",
+    "rankName": "Platinum IV"
+  },
+  {
+    "rankValue": "18",
+    "rankName": "Platinum III"
+  },
+  {
+    "rankValue": "19",
+    "rankName": "Platinum II"
+  },
+  {
+    "rankValue": "20",
+    "rankName": "Platinum I"
+  },
+  {
+    "rankValue": "21",
+    "rankName": "Diamond IV"
+  },
+  {
+    "rankValue": "22",
+    "rankName": "Diamond III"
+  },
+  {
+    "rankValue": "23",
+    "rankName": "Diamond II"
+  },
+  {
+    "rankValue": "24",
+    "rankName": "Diamond I"
+  }
+]
