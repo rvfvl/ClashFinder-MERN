@@ -9,7 +9,7 @@ const getRankValue = require("../utils/getRankValue");
 // @Access - PUBLIC
 exports.getCurrentUserProfile = async (req, res, next) => {
   try {
-    const profile = await Profile.findOne({ userId: req.user.id }).populate("summonerProfile");
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       return res.status(400).json({ success: false, errors: { msg: "Could not find a profile for this user." } });
@@ -28,13 +28,10 @@ exports.getCurrentUserProfile = async (req, res, next) => {
 exports.getProfiles = async (req, res, next) => {
   try {
     const profiles = await Profile.find({
-      profileVisibility: true
+      profileVisibility: true,
+      "summonerProfile.summonerVerified": false
       //$or: [{ primaryRole: { $eq: "TOP" } }, { secondaryRole: { $eq: "MID" } }]
-    })
-      .select("-userId")
-      .populate("summonerProfile", "summonerName summonerRegion summonerRank", {
-        // "summonerRank.tierValue": { $gte: 5, $lte: 10 }
-      });
+    }).select("-userId -dob");
 
     res.json({ count: profiles.length, profiles });
   } catch (error) {

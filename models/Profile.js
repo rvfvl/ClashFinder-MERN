@@ -21,7 +21,21 @@ const ProfileSchema = mongoose.Schema(
       enum: ["Not specified", "ADC", "MID", "TOP", "SUPP", "JNG"],
       default: "Not specified"
     },
-    profileVisibility: { type: Boolean, default: false }
+    profileVisibility: { type: Boolean, default: false },
+    summonerProfile: {
+      summonerVerified: { type: Boolean, default: false },
+      summonerName: { type: String, default: "" },
+      summonerRegion: {
+        type: String,
+        enum: ["ru", "kr", "br1", "oc1", "jp1", "na1", "eun1", "euw1", "tr1", "la1", "la2"],
+        default: "ru"
+      },
+      summonerRank: {
+        tier: { type: String, default: "Unranked" },
+        rank: { type: String, default: "" },
+        tierValue: { type: Number, default: 0 }
+      }
+    }
   },
   {
     toObject: {
@@ -33,11 +47,11 @@ const ProfileSchema = mongoose.Schema(
   }
 );
 
-ProfileSchema.virtual("summonerProfile", {
-  ref: "SummonerProfile",
-  localField: "_id",
-  foreignField: "profileId",
-  justOne: true
-});
+// ProfileSchema.virtual("summonerProfile", {
+//   ref: "SummonerProfile",
+//   localField: "_id",
+//   foreignField: "profileId",
+//   justOne: true
+// });
 
 module.exports = mongoose.model("Profile", ProfileSchema);

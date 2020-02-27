@@ -26,6 +26,8 @@ const connectToDb = async () => {
 
 connectToDb();
 
+mongoose.set("debug", true);
+
 //Load middleware
 app.use(express.json());
 app.use(cors());
