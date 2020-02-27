@@ -27,10 +27,41 @@ exports.getCurrentUserProfile = async (req, res, next) => {
 // @Access - PUBLIC
 exports.getProfiles = async (req, res, next) => {
   try {
+    let query = {};
+
+    if (req.query.region) {
+      query["summonerProfile.summonerRegion"] = { $eq: req.query.region };
+    }
+
+    if (req.query.nationality) {
+      query["nationality"] = req.query.nationality;
+    }
+
+    if (req.query.roles) {
+      const roles = req.query.roles.split(",");
+
+      query["$or"] = [{ primaryRole: { $in: roles } }, { secondaryRole: { $in: roles } }];
+    }
+
+    if (req.query.minRank && req.query.maxRank) {
+      query["$and"] = [
+        { "summonerProfile.summonerRank.tierValue": { $gte: parseInt(req.query.minRank, 10) } },
+        { "summonerProfile.summonerRank.tierValue": { $lte: parseInt(req.query.maxRank, 10) } }
+      ];
+    }
+
+    if (req.query.minRank) {
+      query["summonerProfile.summonerRank.tierValue"] = { $gte: parseInt(req.query.minRank, 10) };
+    }
+
+    if (req.query.maxRank) {
+      query["summonerProfile.summonerRank.tierValue"] = { $lte: parseInt(req.query.maxRank, 10) };
+    }
+
     const profiles = await Profile.find({
       profileVisibility: true,
-      "summonerProfile.summonerVerified": false
-      //$or: [{ primaryRole: { $eq: "TOP" } }, { secondaryRole: { $eq: "MID" } }]
+      "summonerProfile.summonerVerified": true,
+      ...query
     }).select("-userId -dob");
 
     res.json({ count: profiles.length, profiles });

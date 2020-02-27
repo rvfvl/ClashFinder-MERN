@@ -75,8 +75,20 @@ const PlayerPage = () => {
   const { register, handleSubmit, watch, errors } = useForm();
 
   useEffect(() => {
-    dispatch(getAllProfiles());
-  }, []);
+    const { minRank, maxRank, roles, region, nationality } = searchCriteria;
+
+    let paramUrl = `?minRank=${minRank}&maxRank=${maxRank}&roles=${roles.join(',')}`;
+
+    if (region) {
+      paramUrl += `&region=${region}`;
+    }
+
+    if (nationality) {
+      paramUrl += `&nationality=${nationality}`;
+    }
+
+    dispatch(getAllProfiles(paramUrl));
+  }, [searchCriteria]);
 
   const onSubmit = data => {
     const roles = [];
@@ -104,59 +116,6 @@ const PlayerPage = () => {
   if (isLoading) {
     return <div>Loading</div>;
   }
-
-  const showProfiles = () => {
-    if (profiles.length) {
-      let profileList = [...profiles];
-
-      profileList = profiles.filter(
-        profile =>
-          profile.summonerProfile.summonerRank.tierValue >= searchCriteria.minRank &&
-          profile.summonerProfile.summonerRank.tierValue <= searchCriteria.maxRank
-      );
-
-      profileList = profileList.filter(
-        profile =>
-          searchCriteria.roles.includes(profile.primaryRole) ||
-          searchCriteria.roles.includes(profile.secondaryRole)
-      );
-
-      if (searchCriteria.region) {
-        profileList = profileList.filter(
-          profile => profile.summonerProfile.summonerRegion === searchCriteria.region
-        );
-      }
-
-      if (searchCriteria.nationality) {
-        profileList = profileList.filter(
-          profile => profile.nationality === searchCriteria.nationality
-        );
-      }
-
-      if (profileList.length) {
-        return profileList.map(profile => (
-          <PlayerCard
-            playerData={{
-              dob: profile.dob,
-              nationality: profile.nationality,
-              primaryRole: profile.primaryRole,
-              secondaryRole: profile.secondaryRole,
-              discordName: profile.discordName,
-              summonerProfile: {
-                ...profile.summonerProfile.summonerRank,
-                summonerName: profile.summonerProfile.summonerName,
-                summonerRegion: profile.summonerProfile.summonerRegion
-              }
-            }}
-          />
-        ));
-      } else {
-        return <div>No Profiles found.</div>;
-      }
-    } else {
-      return <div>No Profiles found.</div>;
-    }
-  };
 
   return (
     <PlayerPageWrapper>
@@ -230,7 +189,22 @@ const PlayerPage = () => {
       </SearchContainer>
       <ResultsContainer>
         <h1>Find Players:</h1>
-        {showProfiles()}
+        {profiles.map(profile => (
+          <PlayerCard
+            playerData={{
+              dob: profile.dob,
+              nationality: profile.nationality,
+              primaryRole: profile.primaryRole,
+              secondaryRole: profile.secondaryRole,
+              discordName: profile.discordName,
+              summonerProfile: {
+                ...profile.summonerProfile.summonerRank,
+                summonerName: profile.summonerProfile.summonerName,
+                summonerRegion: profile.summonerProfile.summonerRegion
+              }
+            }}
+          />
+        ))}
       </ResultsContainer>
     </PlayerPageWrapper>
   );

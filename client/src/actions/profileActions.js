@@ -65,9 +65,9 @@ export const verifySummonerProfile = summonerData => async dispatch => {
   }
 };
 
-export const getAllProfiles = () => async dispatch => {
+export const getAllProfiles = params => async dispatch => {
   try {
-    const response = await axios.get('/api/v1/profile');
+    const response = await axios.get(`/api/v1/profile/${params}`);
     dispatch({ type: GET_PROFILE_LIST, payload: response.data });
   } catch (error) {
     dispatch(setAlert('danger', error.response.data.errors.msg));
