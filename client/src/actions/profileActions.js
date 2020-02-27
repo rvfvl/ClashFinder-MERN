@@ -42,8 +42,10 @@ export const setProfileVisibilityAction = profileStatus => async dispatch => {
 export const unverifySummonerProfile = () => async dispatch => {
   try {
     const response = await axios.get('/api/v1/profile/unverify');
+    console.log('response', response);
 
-    dispatch({ type: UNVERIFY_SUMMONER_PROFILE, payload: response.data });
+    dispatch(setAlert('success', response.data.msg));
+    dispatch({ type: UNVERIFY_SUMMONER_PROFILE });
   } catch (error) {
     dispatch(setAlert('danger', error.response.data.errors.msg));
     dispatch({ type: UNVERIFY_SUMMONER_PROFILE_ERROR });
@@ -52,14 +54,17 @@ export const unverifySummonerProfile = () => async dispatch => {
 
 export const verifySummonerProfile = summonerData => async dispatch => {
   const summonerInfo = JSON.stringify(summonerData);
+  console.log(summonerInfo);
 
   try {
     const response = await axios.post('/api/v1/profile/verify', summonerInfo, {
       headers: { 'Content-Type': 'application/json' }
     });
+
     dispatch({ type: VERIFY_SUMMONER_PROFILE, payload: response.data });
     dispatch(setAlert('success', 'Profile verified.'));
   } catch (error) {
+    console.log(error.response);
     dispatch(setAlert('danger', error.response.data.errors.msg));
     dispatch({ type: VERIFY_SUMMONER_PROFILE_ERROR });
   }

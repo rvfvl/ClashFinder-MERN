@@ -149,11 +149,9 @@ exports.verifySummonerProfile = async (req, res, next) => {
   const { summonerName, summonerRegion } = req.body;
 
   try {
-    const profile = await Profile.findOne({ userId: req.user.id });
+    const profile = await Profile.findOne({ userId: req.user.id, "summonerProfile.summonerVerified": false });
 
-    const summonerProfile = await SummonerProfile.findOne({ profileId: profile.id });
-
-    if (summonerProfile) {
+    if (!profile) {
       return res.status(400).json({ success: false, msg: "Summoner is already verified." });
     }
 
@@ -182,23 +180,25 @@ exports.verifySummonerProfile = async (req, res, next) => {
             { headers: { "X-Riot-Token": process.env.RIOT_API_KEY } }
           );
           const rank = await response.json();
+
+          console.log(rank);
+
           const filterLeague = rank.filter(league => league.queueType === "RANKED_SOLO_5x5");
 
-          const verifiedProfile = new SummonerProfile({
-            profileId: profile.id,
-            userId: req.user.id,
-            summonerName,
-            summonerRegion,
-            summonerRank: {
-              tier: filterLeague[0].tier,
-              tierValue: getRankValue(filterLeague[0].tier),
-              rank: filterLeague[0].rank
-            }
-          });
+          const updatedProfile = await Profile.findOneAndUpdate(
+            { userId: req.user.id },
+            {
+              "summonerProfile.summonerVerified": true,
+              "summonerProfile.summonerName": summonerName,
+              "summonerProfile.summonerRegion": summonerRegion,
+              "summonerProfile.summonerRank.tier": filterLeague[0].tier || "Unranked",
+              "summonerProfile.summonerRank.tierValue": getRankValue(filterLeague[0].tier || ""),
+              "summonerProfile.summonerRank.rank": filterLeague[0].rank
+            },
+            { new: true }
+          );
 
-          await verifiedProfile.save();
-
-          res.json(verifiedProfile);
+          res.json(updatedProfile);
         } catch (error) {
           console.log(error.message);
           return res
@@ -232,16 +232,17 @@ exports.unlinkSummonerProfile = async (req, res, next) => {
   }
 
   try {
-    const profile = await SummonerProfile.findOne({ userId: req.user.id });
+    const profile = await Profile.findOne({ userId: req.user.id, "summonerProfile.summonerVerified": true });
 
     if (!profile) {
       return res.status(400).json({ success: false, errors: { msg: "Could not find a profile for this user." } });
     }
 
-    await profile.remove();
+    await profile.updateOne({ "summonerProfile.summonerVerified": false }, { new: true });
 
     res.json({ success: true, msg: "Profile succesfuly unlinked." });
   } catch (error) {
+    console.log(error.message);
     res.status(500).json("Server Error");
   }
 };

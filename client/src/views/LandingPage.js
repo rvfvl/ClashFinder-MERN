@@ -169,7 +169,7 @@ const LandingPage = () => {
               <Button type="submit" value="Search" />
             </SearchSection>
           </SearchForm>
-          <p>Current version: Alpha 0.1</p>
+          <p>Current version: Alpha 0.2</p>
         </SearchWrapper>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import device from 'theme/queries';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { IoMdArrowBack } from 'react-icons/io';
 import { Redirect } from 'react-router-dom';
@@ -11,6 +12,7 @@ import Input from 'components/Input/Input';
 import Select from 'components/Select/Select';
 import Button from 'components/Button/Button';
 import Badge from 'components/Badge/Badge';
+import SelectNew from 'components/SelectNew/SelectNew';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const PageWrapper = styled.div`
@@ -62,15 +64,18 @@ const VerifyProfilePage = () => {
   const { register, handleSubmit, errors } = useForm();
   const dispatch = useDispatch();
   const partyId = useSelector(state => String(state.auth.user._id).substring(0, 8));
-  const summonerProfile = useSelector(state => state.profile.currentProfile.summonerProfile);
+  const isSummonerVerified = useSelector(
+    state => state.profile.currentProfile.summonerProfile.summonerVerified
+  );
   const [summonerName, setSummonerName] = useState('');
+  const [summonerRegion, setSummonerRegion] = useState('ru');
   const [partyCode, setPartyCode] = useState({ value: partyId, copied: false });
 
   const onSubmit = data => {
     dispatch(verifySummonerProfile(data));
   };
 
-  if (summonerProfile) {
+  if (isSummonerVerified) {
     return <Redirect to="/profile" />;
   }
   return (
@@ -93,7 +98,12 @@ const VerifyProfilePage = () => {
         </span>
         <span>
           <StyledLabel htmlFor="summonerName">Summoner Region:</StyledLabel>
-          <Select name="summonerRegion" ref={register}>
+          <SelectNew
+            name="summonerRegion"
+            ref={register({ required: true })}
+            value={summonerRegion}
+            onChange={e => setSummonerRegion(e.target.value)}
+          >
             <option value="ru">Russia</option>
             <option value="kr">Korea</option>
             <option value="br1">Brazil</option>
@@ -105,7 +115,7 @@ const VerifyProfilePage = () => {
             <option value="tr1">Turkey</option>
             <option value="la1">LAS</option>
             <option value="la2">LAN</option>
-          </Select>
+          </SelectNew>
         </span>
         <span>Enter this code into your League of Legends account client.</span>
         <CopyToClipboard

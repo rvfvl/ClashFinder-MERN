@@ -20,10 +20,12 @@ const initialState = {
 const profileReducer = (state = initialState, action) => {
   switch (action.type) {
     case CURRENT_USER_PROFILE:
+    case VERIFY_SUMMONER_PROFILE:
       return { ...state, currentProfile: action.payload, loading: false };
     case CURRENT_USER_PROFILE_ERROR:
     case SET_PROFILE_VISIBILITY_ERROR:
     case UNVERIFY_SUMMONER_PROFILE_ERROR:
+    case VERIFY_SUMMONER_PROFILE_ERROR:
     case GET_PROFILE_LIST_ERROR:
       return { ...state, loading: false };
     case SET_PROFILE_VISIBILITY:
@@ -33,17 +35,12 @@ const profileReducer = (state = initialState, action) => {
         loading: false
       };
     case UNVERIFY_SUMMONER_PROFILE:
-    case VERIFY_SUMMONER_PROFILE_ERROR:
       return {
         ...state,
-        currentProfile: { ...state.currentProfile, summonerProfile: null },
-        loading: false
-      };
-    case VERIFY_SUMMONER_PROFILE:
-      return {
-        ...state,
-        currentProfile: { ...state.currentProfile, summonerProfile: action.payload },
-        loading: false
+        currentProfile: {
+          ...state.currentProfile,
+          summonerProfile: { ...state.currentProfile.summonerProfile, summonerVerified: false }
+        }
       };
     case GET_PROFILE_LIST:
       return {

@@ -359,7 +359,7 @@ const ProfilePage = () => {
         <ProfileForm type="Summoner Profile">
           <table>
             <tbody>
-              {profile.currentProfile.summonerProfile ? (
+              {profile.currentProfile.summonerProfile.summonerVerified ? (
                 <>
                   <tr>
                     <td>
@@ -398,7 +398,7 @@ const ProfilePage = () => {
               )}
             </tbody>
           </table>
-          {profile.currentProfile.summonerProfile ? (
+          {profile.currentProfile.summonerProfile.summonerVerified ? (
             <StyledButton
               type="button"
               value="Unverify account here"

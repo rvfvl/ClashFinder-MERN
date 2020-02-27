@@ -1,4 +1,5 @@
 const processRankImage = rankValue => {
+  if (rankValue === 0) return 'diamond.png';
   if (rankValue === 1) return 'iron.png';
   if (rankValue === 2) return 'bronze.png';
   if (rankValue === 3) return 'silver.png';
