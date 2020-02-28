@@ -2,6 +2,8 @@ const User = require("../models/User");
 const Profile = require("../models/Profile");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 const { validationResult } = require("express-validator");
 
 // @Description - Register new user
@@ -91,6 +93,158 @@ exports.currentUser = async (req, res) => {
     }
 
     res.json(user);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ success: false, errors: { msg: "Server error." } });
+  }
+};
+
+// @Description - Generate Password Token and send email.
+// @Route - POST - /api/v1/auth/forgotpassword
+// @Access - Public
+exports.forgotPassword = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  try {
+    const user = await User.findOne({ email: req.body.email }).select("-password");
+
+    if (!user) {
+      return res.status(400).json({ success: false, errors: { msg: "User not found." } });
+    }
+
+    const resetToken = user.getResetPasswordToken();
+
+    await user.save();
+
+    const url = `${req.protocol}://${req.get("host")}/api/v1/resetpassword/${resetToken}`;
+
+    const message = `Please reset your password using link: <a href='${url}'>Click to reset password</a>`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Password Reset",
+        text: message
+      });
+
+      res.json({ success: true, msg: "Email sent." });
+    } catch (error) {
+      console.log(error.message);
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+
+      await user.save();
+
+      return res.status(400).json({ success: false, errors: { msg: "Email could not be sent." } });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ success: false, errors: { msg: "Server error." } });
+  }
+};
+
+// @Description - Reset Password
+// @Route - PUT - /api/v1/auth/resetpassword/:resettoken
+// @Access - Public
+exports.resetPassword = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  const resetToken = crypto
+    .createHash("sha256")
+    .update(req.params.resettoken)
+    .digest("hex");
+
+  try {
+    const user = await User.findOne({ resetPasswordToken: resetToken, resetPasswordExpire: { $gt: Date.now() } });
+
+    if (!user) {
+      return res.status(400).json({ success: false, errors: { msg: "Invalid reset token." } });
+    }
+
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.json({ success: true, msg: "Password succesfully updated." });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ success: false, errors: { msg: "Server error." } });
+  }
+};
+
+// @Description - Reset Profile Email
+// @Route - PUT - /api/v1/auth/updateemail/
+// @Access - Private
+exports.updateEmail = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  try {
+    const user = await User.findById(req.user.id);
+    const userExists = await User.findOne({ email: req.body.email }).select("-password");
+
+    const isValidPassword = await bcrypt.compare(req.body.password, user.password);
+
+    if (!isValidPassword) {
+      return res.status(400).json({ success: false, errors: { msg: "Password is not correct." } });
+    }
+
+    if (userExists) {
+      return res.status(400).json({ success: false, errors: { msg: "User with this email address already exists." } });
+    }
+
+    if (user.email === req.body.email) {
+      return res.status(400).json({ success: false, errors: { msg: "Please provide different email address." } });
+    }
+
+    user.email = req.body.email;
+
+    await user.save();
+
+    res.json({ success: true, msg: "Email updated successfully." });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ success: false, errors: { msg: "Server error." } });
+  }
+};
+
+// @Description - Reset Profile Password
+// @Route - PUT - /api/v1/auth/updatepassword/
+// @Access - Private
+exports.updatePassword = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  try {
+    const user = await User.findById(req.user.id);
+
+    const isValidPassword = await bcrypt.compare(req.body.oldPassword, user.password);
+
+    if (!isValidPassword) {
+      return res.status(400).json({ success: false, errors: { msg: "Incorrect password provided." } });
+    }
+
+    user.password = req.body.newPassword;
+
+    await user.save();
+
+    res.json({ success: true, msg: "Password updated successfully. " });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ success: false, errors: { msg: "Server error." } });

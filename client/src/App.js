@@ -13,6 +13,7 @@ import LoginPage from './views/LoginPage';
 import RegisterPage from './views/RegisterPage';
 import PlayerPage from './views/PlayerPage';
 import VerifyProfilePage from './views/VerifyProfilePage';
+import EditProfilePage from './views/EditProfilePage';
 
 // Import components
 import Navbar from './components/Navbar/Navbar';
@@ -68,7 +69,8 @@ function App() {
             <Route exact path="/register" component={RegisterPage} />
             <Route exact path="/players" component={PlayerPage} />
             <PrivateRoute exact path="/profile" component={ProfilePage} />
-            <PrivateRoute exact path="/verifyprofile" component={VerifyProfilePage} />
+            <PrivateRoute exact path="/profile/verify" component={VerifyProfilePage} />
+            <PrivateRoute exact path="/profile/edit" component={EditProfilePage} />
           </Switch>
         </Container>
       </BrowserRouter>

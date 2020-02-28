@@ -408,11 +408,16 @@ const ProfilePage = () => {
             <StyledButton
               type="button"
               value="Verify your account"
-              onClick={() => history.push('/verifyprofile')}
+              onClick={() => history.push('/profile/verify')}
             />
           )}
         </ProfileForm>
       </div>
+      <StyledButton
+        type="button"
+        value="Edit Profile"
+        onClick={() => history.push('/profile/edit')}
+      />
     </PageWrapper>
   );
 };
