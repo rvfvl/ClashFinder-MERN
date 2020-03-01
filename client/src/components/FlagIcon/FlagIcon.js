@@ -5,7 +5,7 @@ const FlagIcon = ({ countryData, countryName, flagSize = 32 }) => {
 
   return (
     <img
-      style={{ marginRight: '5px' }}
+      style={{ margin: ' 0 5px' }}
       src={`https://www.countryflags.io/${flag.code}/flat/${flagSize}.png`}
       alt="Country Flag"
     />

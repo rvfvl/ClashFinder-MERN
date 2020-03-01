@@ -73,22 +73,18 @@ const EditProfilePage = () => {
   const {
     register: registerEmail,
     handleSubmit: handleSubmitEmail,
-    errors: errorsEmail
+    errors: errorsEmail,
+    reset: resetEmail
   } = useForm();
   const {
     register: registerPassword,
     handleSubmit: handleSubmitPassword,
-    errors: errorsPassword
+    errors: errorsPassword,
+    watch: watchPassword,
+    reset: resetPassword
   } = useForm();
 
   const dispatch = useDispatch();
-
-  const [emailForm, setEmailForm] = useState({ email: '', currentPassword: '' });
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: ''
-  });
 
   const onSubmitEmail = async data => {
     const { email, currentPassword } = data;
@@ -101,6 +97,7 @@ const EditProfilePage = () => {
 
       dispatch(loadUser());
       dispatch(setAlert('success', response.data.msg));
+      resetEmail();
     } catch (error) {
       dispatch(setAlert('danger', error.response.data.errors.msg));
     }
@@ -114,6 +111,7 @@ const EditProfilePage = () => {
       });
 
       dispatch(setAlert('success', response.data.msg));
+      resetPassword();
     } catch (error) {
       dispatch(setAlert('danger', error.response.data.errors.msg));
     }
@@ -131,8 +129,6 @@ const EditProfilePage = () => {
                 <Input
                   type="text"
                   name="email"
-                  value={emailForm.email}
-                  onChange={e => setEmailForm({ ...emailForm, [e.target.name]: e.target.value })}
                   ref={registerEmail({
                     required: true,
                     pattern: /^([\w\d._\-#])+@([\w\d._\-#]+[.][\w\d._\-#]+)+$/
@@ -149,8 +145,6 @@ const EditProfilePage = () => {
                 <Input
                   type="password"
                   name="currentPassword"
-                  value={emailForm.currentPassword}
-                  onChange={e => setEmailForm({ ...emailForm, [e.target.name]: e.target.value })}
                   ref={registerEmail({ required: true })}
                 />
                 {errorsEmail.currentPassword && (
@@ -172,10 +166,6 @@ const EditProfilePage = () => {
                 <Input
                   type="password"
                   name="currentPassword"
-                  value={passwordForm.currentPassword}
-                  onChange={e =>
-                    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
-                  }
                   ref={registerPassword({ required: true })}
                 />
                 {errorsPassword.currentPassword && (
@@ -189,10 +179,6 @@ const EditProfilePage = () => {
                 <Input
                   type="password"
                   name="newPassword"
-                  value={passwordForm.newPassword}
-                  onChange={e =>
-                    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
-                  }
                   ref={registerPassword({ required: true, minLength: 5 })}
                 />
                 {errorsPassword.newPassword && (
@@ -206,13 +192,9 @@ const EditProfilePage = () => {
                 <Input
                   type="password"
                   name="confirmNewPassword"
-                  value={passwordForm.confirmNewPassword}
-                  onChange={e =>
-                    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
-                  }
                   ref={registerPassword({
                     required: true,
-                    validate: value => value === passwordForm.newPassword
+                    validate: value => value === watchPassword().newPassword
                   })}
                 />
                 {errorsPassword.confirmNewPassword && (

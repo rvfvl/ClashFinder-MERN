@@ -21,7 +21,7 @@ const ProfileSchema = mongoose.Schema(
       enum: ["Not specified", "ADC", "MID", "TOP", "SUPP", "JNG"],
       default: "Not specified"
     },
-    profileVisibility: { type: Boolean, default: false },
+    profileVisibility: { type: Boolean, default: true },
     summonerProfile: {
       summonerVerified: { type: Boolean, default: false },
       summonerName: { type: String, default: "" },

@@ -35,6 +35,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Exo 2', sans-serif;
     color: #fff;
     height: 100%;
+    background-color: #000;
     background-size: cover;
     background: url(${background}) no-repeat center center fixed;
     

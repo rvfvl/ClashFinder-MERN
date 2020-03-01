@@ -67,8 +67,6 @@ const VerifyProfilePage = () => {
   const isSummonerVerified = useSelector(
     state => state.profile.currentProfile.summonerProfile.summonerVerified
   );
-  const [summonerName, setSummonerName] = useState('');
-  const [summonerRegion, setSummonerRegion] = useState('ru');
   const [partyCode, setPartyCode] = useState({ value: partyId, copied: false });
 
   const onSubmit = data => {
@@ -83,13 +81,7 @@ const VerifyProfilePage = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <span>
           <StyledLabel htmlFor="summonerName">Summoner Name:</StyledLabel>
-          <Input
-            type="text"
-            name="summonerName"
-            value={summonerName}
-            onChange={e => setSummonerName(e.target.value)}
-            ref={register({ required: true })}
-          />
+          <Input type="text" name="summonerName" ref={register({ required: true })} />
           {errors.summonerName && (
             <Badge className="danger" style={{ display: 'block' }}>
               Please enter your Summoner name.
@@ -98,12 +90,7 @@ const VerifyProfilePage = () => {
         </span>
         <span>
           <StyledLabel htmlFor="summonerName">Summoner Region:</StyledLabel>
-          <SelectNew
-            name="summonerRegion"
-            ref={register({ required: true })}
-            value={summonerRegion}
-            onChange={e => setSummonerRegion(e.target.value)}
-          >
+          <SelectNew name="summonerRegion" ref={register({ required: true })}>
             <option value="ru">Russia</option>
             <option value="kr">Korea</option>
             <option value="br1">Brazil</option>
@@ -126,7 +113,7 @@ const VerifyProfilePage = () => {
             <strong>{partyCode.value}</strong>
           </span>
         </CopyToClipboard>
-        {partyCode.copied && <span style={{ color: 'red' }}>Copied to clipboard.</span>}
+        {partyCode.copied && <span style={{ color: 'green' }}>Copied to clipboard.</span>}
         <StyledButton type="submit" value="Verify" />
       </form>
       <Link to="/profile" className="backBtn">

@@ -17,7 +17,7 @@ const CardWrapper = styled.div`
   background-repeat: no-repeat;
   transition: transform 0.2s ease-in-out;
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 0 auto 1rem;
 
   &:hover {
     transform: translateY(-5px);
@@ -95,7 +95,7 @@ const RankTitle = styled.div`
 `;
 
 const PlayerCard = ({ playerData }) => {
-  const { dob, nationality, primaryRole, secondaryRole, discordName, summonerProfile } = playerData;
+  const { nationality, primaryRole, secondaryRole, discordName, summonerProfile } = playerData;
 
   return (
     <CardWrapper>
