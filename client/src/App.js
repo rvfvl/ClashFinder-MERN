@@ -14,6 +14,8 @@ import RegisterPage from './views/RegisterPage';
 import PlayerPage from './views/PlayerPage';
 import VerifyProfilePage from './views/VerifyProfilePage';
 import EditProfilePage from './views/EditProfilePage';
+import ForgotPasswordPage from './views/ForgotPasswordPage';
+import ResetPasswordPage from './views/ResetPasswordPage';
 
 // Import components
 import Navbar from './components/Navbar/Navbar';
@@ -68,6 +70,8 @@ function App() {
             <Route exact path="/login" component={LoginPage} />
             <Route exact path="/register" component={RegisterPage} />
             <Route exact path="/players" component={PlayerPage} />
+            <Route exact path="/forgotpassword" component={ForgotPasswordPage} />
+            <Route exact path="/resetpassword/:resettoken" component={ResetPasswordPage} />
             <PrivateRoute exact path="/profile" component={ProfilePage} />
             <PrivateRoute exact path="/profile/verify" component={VerifyProfilePage} />
             <PrivateRoute exact path="/profile/edit" component={EditProfilePage} />

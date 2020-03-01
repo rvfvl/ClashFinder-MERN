@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { IoMdArrowBack } from 'react-icons/io';
 import { Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setAlert } from 'actions/alertActions';
 import { loadUser } from 'actions/authActions';
 import Input from 'components/Input/Input';
@@ -39,9 +39,7 @@ const PageWrapper = styled.div`
   }
 
   form {
-    @media ${device.tablet} {
-      width: 50%;
-    }
+    margin-right: 1rem;
 
     span {
       display: block;
@@ -50,9 +48,19 @@ const PageWrapper = styled.div`
   }
 `;
 
-const StyledButton = styled(Button)`
-  margin: 0;
-  width: 150px;
+const FormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media ${device.tablet} {
+    flex-direction: row;
+  }
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 `;
 
 const StyledLabel = styled.label`
@@ -74,10 +82,6 @@ const EditProfilePage = () => {
   } = useForm();
 
   const dispatch = useDispatch();
-  const user = useSelector(state => state.auth.user || '');
-
-  const [isEmailFormOpen, setIsEmailFormOpen] = useState(false);
-  const [isPasswordFormOpen, setIsPasswordFormOpen] = useState(false);
 
   const [emailForm, setEmailForm] = useState({ email: '', currentPassword: '' });
   const [passwordForm, setPasswordForm] = useState({
@@ -96,7 +100,6 @@ const EditProfilePage = () => {
       });
 
       dispatch(loadUser());
-      setIsEmailFormOpen(false);
       dispatch(setAlert('success', response.data.msg));
     } catch (error) {
       dispatch(setAlert('danger', error.response.data.errors.msg));
@@ -110,7 +113,6 @@ const EditProfilePage = () => {
         newPassword: data.newPassword
       });
 
-      setIsPasswordFormOpen(false);
       dispatch(setAlert('success', response.data.msg));
     } catch (error) {
       dispatch(setAlert('danger', error.response.data.errors.msg));
@@ -119,136 +121,111 @@ const EditProfilePage = () => {
 
   return (
     <PageWrapper>
-      <h1>Email:</h1>
-      {isEmailFormOpen ? (
-        <div>
-          <form onSubmit={handleSubmitEmail(onSubmitEmail)}>
-            <span>
-              <StyledLabel htmlFor="email">Email:</StyledLabel>
-              <Input
-                type="text"
-                name="email"
-                value={emailForm.email}
-                onChange={e => setEmailForm({ ...emailForm, [e.target.name]: e.target.value })}
-                ref={registerEmail({
-                  required: true,
-                  pattern: /^([\w\d._\-#])+@([\w\d._\-#]+[.][\w\d._\-#]+)+$/
-                })}
-              />
-              {errorsEmail.email && (
-                <Badge className="danger" style={{ display: 'block' }}>
-                  Please enter correct email address.
-                </Badge>
-              )}
-            </span>
-            <span>
-              <StyledLabel htmlFor="currentPassword">Current password:</StyledLabel>
-              <Input
-                type="password"
-                name="currentPassword"
-                value={emailForm.currentPassword}
-                onChange={e => setEmailForm({ ...emailForm, [e.target.name]: e.target.value })}
-                ref={registerEmail({ required: true })}
-              />
-              {errorsEmail.currentPassword && (
-                <Badge className="danger" style={{ display: 'block' }}>
-                  Please enter current password.
-                </Badge>
-              )}
-            </span>
-            <StyledButton type="submit" value="Change Email" />
-            <StyledButton
-              type="button"
-              value="Cancel"
-              onClick={() => setIsEmailFormOpen(!isEmailFormOpen)}
-            />
-          </form>
-        </div>
-      ) : (
-        <div>
-          <p>{user.email}</p>
-          <StyledButton
-            type="button"
-            value="Edit Email"
-            onClick={() => setIsEmailFormOpen(!isEmailFormOpen)}
-          />
-        </div>
-      )}
-      <h1>Password:</h1>
-      {isPasswordFormOpen ? (
-        <div>
-          <form onSubmit={handleSubmitPassword(onSubmitPassword)}>
-            <span>
-              <StyledLabel htmlFor="currentPassword">Current password:</StyledLabel>
-              <Input
-                type="password"
-                name="currentPassword"
-                value={passwordForm.currentPassword}
-                onChange={e =>
-                  setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
-                }
-                ref={registerPassword({ required: true })}
-              />
-              {errorsPassword.currentPassword && (
-                <Badge className="danger" style={{ display: 'block' }}>
-                  Please enter current password.
-                </Badge>
-              )}
-            </span>
-            <span>
-              <StyledLabel htmlFor="newPassword">New password:</StyledLabel>
-              <Input
-                type="password"
-                name="newPassword"
-                value={passwordForm.newPassword}
-                onChange={e =>
-                  setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
-                }
-                ref={registerPassword({ required: true, minLength: 5 })}
-              />
-              {errorsPassword.newPassword && (
-                <Badge className="danger" style={{ display: 'block' }}>
-                  Password needs to be at least 5 characters long.
-                </Badge>
-              )}
-            </span>
-            <span>
-              <StyledLabel htmlFor="confirmNewPassword">Confirm new password:</StyledLabel>
-              <Input
-                type="password"
-                name="confirmNewPassword"
-                value={passwordForm.confirmNewPassword}
-                onChange={e =>
-                  setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
-                }
-                ref={registerPassword({
-                  required: true,
-                  validate: value => value === passwordForm.newPassword
-                })}
-              />
-              {errorsPassword.confirmNewPassword && (
-                <Badge className="danger" style={{ display: 'block' }}>
-                  Password does not match.
-                </Badge>
-              )}
-            </span>
-            <StyledButton type="submit" value="Change Password" />
-            <StyledButton
-              type="button"
-              value="Cancel"
-              onClick={() => setIsPasswordFormOpen(!isPasswordFormOpen)}
-            />
-          </form>
-        </div>
-      ) : (
-        <div>
-          <StyledButton
-            type="button"
-            value="Edit Password"
-            onClick={() => setIsPasswordFormOpen(!isPasswordFormOpen)}
-          />
-        </div>
-      )}
+      <FormWrapper>
+        <FormContainer>
+          <h1>Email:</h1>
+          <div>
+            <form onSubmit={handleSubmitEmail(onSubmitEmail)}>
+              <span>
+                <StyledLabel htmlFor="email">Email:</StyledLabel>
+                <Input
+                  type="text"
+                  name="email"
+                  value={emailForm.email}
+                  onChange={e => setEmailForm({ ...emailForm, [e.target.name]: e.target.value })}
+                  ref={registerEmail({
+                    required: true,
+                    pattern: /^([\w\d._\-#])+@([\w\d._\-#]+[.][\w\d._\-#]+)+$/
+                  })}
+                />
+                {errorsEmail.email && (
+                  <Badge className="danger" style={{ display: 'block' }}>
+                    Please enter correct email address.
+                  </Badge>
+                )}
+              </span>
+              <span>
+                <StyledLabel htmlFor="currentPassword">Current password:</StyledLabel>
+                <Input
+                  type="password"
+                  name="currentPassword"
+                  value={emailForm.currentPassword}
+                  onChange={e => setEmailForm({ ...emailForm, [e.target.name]: e.target.value })}
+                  ref={registerEmail({ required: true })}
+                />
+                {errorsEmail.currentPassword && (
+                  <Badge className="danger" style={{ display: 'block' }}>
+                    Please enter current password.
+                  </Badge>
+                )}
+              </span>
+              <Button type="submit" value="Change Email" />
+            </form>
+          </div>
+        </FormContainer>
+        <FormContainer>
+          <h1>Password:</h1>
+          <div>
+            <form onSubmit={handleSubmitPassword(onSubmitPassword)}>
+              <span>
+                <StyledLabel htmlFor="currentPassword">Current password:</StyledLabel>
+                <Input
+                  type="password"
+                  name="currentPassword"
+                  value={passwordForm.currentPassword}
+                  onChange={e =>
+                    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
+                  }
+                  ref={registerPassword({ required: true })}
+                />
+                {errorsPassword.currentPassword && (
+                  <Badge className="danger" style={{ display: 'block' }}>
+                    Please enter current password.
+                  </Badge>
+                )}
+              </span>
+              <span>
+                <StyledLabel htmlFor="newPassword">New password:</StyledLabel>
+                <Input
+                  type="password"
+                  name="newPassword"
+                  value={passwordForm.newPassword}
+                  onChange={e =>
+                    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
+                  }
+                  ref={registerPassword({ required: true, minLength: 5 })}
+                />
+                {errorsPassword.newPassword && (
+                  <Badge className="danger" style={{ display: 'block' }}>
+                    Password needs to be at least 5 characters long.
+                  </Badge>
+                )}
+              </span>
+              <span>
+                <StyledLabel htmlFor="confirmNewPassword">Confirm new password:</StyledLabel>
+                <Input
+                  type="password"
+                  name="confirmNewPassword"
+                  value={passwordForm.confirmNewPassword}
+                  onChange={e =>
+                    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
+                  }
+                  ref={registerPassword({
+                    required: true,
+                    validate: value => value === passwordForm.newPassword
+                  })}
+                />
+                {errorsPassword.confirmNewPassword && (
+                  <Badge className="danger" style={{ display: 'block' }}>
+                    Password does not match.
+                  </Badge>
+                )}
+              </span>
+              <Button type="submit" value="Change Password" />
+            </form>
+          </div>
+        </FormContainer>
+      </FormWrapper>
       <div>
         <Link to="/profile" className="backBtn">
           <IoMdArrowBack size={20} />

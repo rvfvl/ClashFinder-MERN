@@ -7,6 +7,7 @@ const Button = styled.input`
   border: 1px solid #66fcf1;
   border-radius: 50px;
   cursor: pointer;
+  min-width: 150px;
   margin: 1rem 10px;
   padding: 1rem;
 `;

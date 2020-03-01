@@ -89,7 +89,7 @@ exports.currentUser = async (req, res) => {
     const user = await User.findById(req.user.id).select("-password");
 
     if (!user) {
-      return res.status(400).json({ success: false, errors: { msg: "User not found." } });
+      return res.status(400).json({ success: false, errors: { msg: "Email address was not found." } });
     }
 
     res.json(user);
@@ -113,14 +113,15 @@ exports.forgotPassword = async (req, res) => {
     const user = await User.findOne({ email: req.body.email }).select("-password");
 
     if (!user) {
-      return res.status(400).json({ success: false, errors: { msg: "User not found." } });
+      return res.status(400).json({ success: false, errors: { msg: "Email address was not found." } });
     }
 
     const resetToken = user.getResetPasswordToken();
 
     await user.save();
 
-    const url = `${req.protocol}://${req.get("host")}/api/v1/resetpassword/${resetToken}`;
+    //const url = `${req.protocol}://${req.get("host")}/api/v1/resetpassword/${resetToken}`;
+    const url = `http://localhost:3000/resetpassword/${resetToken}`;
 
     const message = `Please reset your password using link: <a href='${url}'>Click to reset password</a>`;
 

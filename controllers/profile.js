@@ -183,15 +183,22 @@ exports.verifySummonerProfile = async (req, res, next) => {
 
           const filterLeague = rank.filter(league => league.queueType === "RANKED_SOLO_5x5");
 
+          if (!filterLeague.length) {
+            return res.status(400).json({
+              success: false,
+              errors: { msg: "Your account needs to have a division in Ranked Solo/Duo queue." }
+            });
+          }
+
           const updatedProfile = await Profile.findOneAndUpdate(
             { userId: req.user.id },
             {
               "summonerProfile.summonerVerified": true,
               "summonerProfile.summonerName": summonerName,
               "summonerProfile.summonerRegion": summonerRegion,
-              "summonerProfile.summonerRank.tier": filterLeague.length ? filterLeague[0].tier : "Unranked",
-              "summonerProfile.summonerRank.tierValue": filterLeague.length ? getRankValue(filterLeague[0].tier) : 0,
-              "summonerProfile.summonerRank.rank": filterLeague.length ? filterLeague[0].rank : ""
+              "summonerProfile.summonerRank.tier": filterLeague[0].tier,
+              "summonerProfile.summonerRank.tierValue": getRankValue(filterLeague[0].tier),
+              "summonerProfile.summonerRank.rank": filterLeague[0].rank
             },
             { new: true }
           );

@@ -106,7 +106,7 @@ const LoginPage = () => {
             {errors.password && <Badge>Password is required.</Badge>}
             <input type="submit" />
           </StyledForm>
-          <StyledLink to="/">Forgot your password?</StyledLink>
+          <StyledLink to="/forgotpassword">Forgot your password?</StyledLink>
           <StyledHr />
           <StyledLink to="/register">
             Don&apos;t have an account? <strong>Register</strong>
