@@ -42,7 +42,6 @@ const ResetPasswordPage = props => {
       );
 
       setPasswordChangeState({ state: true, msg: response.data.msg });
-      history.push('/');
       //dispatch(setAlert('success', response.data.msg));
     } catch (error) {
       setPasswordChangeState({ state: false, msg: error.response.data.errors.msg });

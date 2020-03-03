@@ -23,7 +23,7 @@ import Container from './components/Container/Container';
 import Badge from './components/Badge/Badge';
 
 import theme from './theme/theme';
-import background from './assets/background.jpg';
+import background from './assets/background.png';
 
 const GlobalStyle = createGlobalStyle`
   html {
